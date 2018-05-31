@@ -1,29 +1,31 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookePaser = require('cookie-parser');
 
 const app = express();
 
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(cookePaser());
 
 //tells express to use the pug template engine (in the view folder by default)
 app.set('view engine', 'pug')
 
-//this is for the root route (the index page)
-app.get('/', (req, res) => {
-    res.render('index'); 
+const mainRoutes = require('./routes');
+const cardRoutes = require('./routes/cards');
+
+app.use(mainRoutes);
+app.use('/cards', cardRoutes);
+
+app.use((req, res, next) => {
+    const err = new Error('Not Found'); 
+    err.status = 404; 
+    next(err); 
 });
 
-app.get('/cards', (req, res) => {
-    res.render('cards', {prompt: "Who is bured in Grant's tomb?"});
-});
-
-app.get('/hello', (req, res) => {
-    res.render('hello');
-});
-
-app.post('/hello', (req, res) => {
-    console.dir(req.body);
-    res.render('hello');
+app.use((err, req, res, next) => {
+    res.locals.error = err;
+    res.status(err.status); 
+    res.render('error', err); 
 });
 
 app.listen(3000, () => {
