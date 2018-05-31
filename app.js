@@ -1,12 +1,9 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 
-const firstNames = [
-    'big',
-    'arnold',
-    'stinkman'
-]
+app.use(bodyParser.urlencoded({extended: false}));
 
 //tells express to use the pug template engine (in the view folder by default)
 app.set('view engine', 'pug')
@@ -20,8 +17,13 @@ app.get('/cards', (req, res) => {
     res.render('cards', {prompt: "Who is bured in Grant's tomb?"});
 });
 
-app.get('/names', (req, res) => {
-    res.render('names', {firstNames});
+app.get('/hello', (req, res) => {
+    res.render('hello');
+});
+
+app.post('/hello', (req, res) => {
+    console.dir(req.body);
+    res.render('hello');
 });
 
 app.listen(3000, () => {
