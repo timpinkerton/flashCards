@@ -6,6 +6,7 @@ const app = express();
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookePaser());
+app.use('/static', express.static('public'));
 
 //tells express to use the pug template engine (in the view folder by default)
 app.set('view engine', 'pug')
